@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Brain Scan Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f4ff 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e0f2fe;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 24px 0;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #6b7280;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        .container-custom {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 48px 16px;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e0f2fe;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .upload-content {
+            padding: 32px;
+        }
+
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed #93c5fd;
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #60a5fa;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            background: linear-gradient(135deg, #3b82f6, #4f46e5);
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-icon svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .upload-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Image Preview Section */
+        .image-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e0f2fe;
+            overflow: hidden;
+            margin-bottom: 32px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .image-content {
+            padding: 32px;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .image-preview-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            max-width: 384px;
+            width: 100%;
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e7eb;
+        }
+
+        .ready-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Button Styles */
+        .btn-predict-custom {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        .btn-predict-custom:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1d4ed8, #4338ca);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-predict-custom:disabled {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+        .btn-predict-custom svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Loader Styles */
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e0f2fe;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #bbf7d0;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .results-content {
+            padding: 32px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #bbf7d0;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .result-icon {
+            background: #10b981;
+            border-radius: 50%;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .result-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .result-content h4 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        #result {
+            color: #374151;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .result-meta {
+            margin-top: 16px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .result-meta p {
+            margin: 4px 0;
+        }
+
+        .analyze-another {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            font-weight: 500;
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0f2fe;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .info-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-card-icon.blue {
+            background: #dbeafe;
+        }
+
+        .info-card-icon.green {
+            background: #dcfce7;
+        }
+
+        .info-card-icon.purple {
+            background: #f3e8ff;
+        }
+
+        .info-card-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .info-card-icon.blue svg {
+            color: #2563eb;
+        }
+
+        .info-card-icon.green svg {
+            color: #16a34a;
+        }
+
+        .info-card-icon.purple svg {
+            color: #9333ea;
+        }
+
+        .info-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .upload-content,
+            .image-content,
+            .results-content {
+                padding: 24px;
+            }
+
+            .file-upload-wrapper {
+                padding: 32px 16px;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>BrainScan AI</h1>
+            <p>Advanced AI-powered medical imaging analysis for accurate brain scan interpretation</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-content">
+                <h2 class="upload-title">Upload Image</h2>
+                
+                <form id="upload-file" method="post" enctype="multipart/form-data">
+                    <label for="imageUpload" class="file-upload-wrapper">
+                        <div class="upload-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                        </div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-subtext">Supports only JPG file</div>
+                        <input type="file" name="file" id="imageUpload" accept=".jpg">
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <!-- Image Preview Section -->
+        <div class="image-section" style="display:none;">
+            <div class="image-content">
+                <h3 class="preview-title">Image Preview</h3>
+                
+                <div class="image-preview-container">
+                    <div class="image-wrapper">
+                        <img id="imagePreview" class="img-responsive" src="#" alt="Brain scan preview">
+                        <div class="ready-badge">Ready for Analysis</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="button" class="btn-predict-custom" id="btn-predict">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Start AI Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div class="loader" style="display:none;">
+            <div class="spinner"></div>
+            <div class="loader-text">Analyzing Brain Scan...</div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" style="display:none;">
+            <div class="results-content">
+                <h3 class="results-title">Analysis Results</h3>
+                
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-icon">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="result-content">
+                            <h4>Diagnosis Complete</h4>
+                            <h3 id="result"><span></span></h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analyze-another">
+                    <button class="btn-secondary" onclick="resetForm()">Analyze Another Scan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-card-icon blue">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3>Fast Analysis</h3>
+                <p>Get results in seconds</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-card-icon green">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3>Accurate Results</h3>
+                <p>90% accuracy rate</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-card-icon purple">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h3>Secure & Private</h3>
+                <p>Your medical data is encrypted</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Image upload handling
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.querySelector('.image-section').style.display = 'block';
+                    document.querySelector('.results-section').style.display = 'none'; // Hide previous results
+                    document.querySelector('.loader').style.display = 'none'; // Hide loader if it was visible
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Predict button handling
+        document.getElementById('btn-predict').addEventListener('click', function() {
+            const imageUpload = document.getElementById('imageUpload');
+            if (imageUpload.files.length === 0) {
+                alert('Please select an image first.');
+                return;
+            }
+
+            const file = imageUpload.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show loader
+            document.querySelector('.loader').style.display = 'flex';
+            document.querySelector('.results-section').style.display = 'none';
+            document.querySelector('.image-section').style.display = 'none'; // Optionally hide image preview during loading
+            
+            // Disable button and show loading state
+            const predictButton = this;
+            predictButton.disabled = true;
+            predictButton.innerHTML = `
+                <div style="width: 20px; height: 20px; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+                Analyzing Brain Scan...
+            `;
+
+            fetch('/predict', { // Assuming your Flask route is /predict
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.text(); // Changed from response.json()
+            })
+            .then(data => {
+                // Hide loader
+                document.querySelector('.loader').style.display = 'none';
+                
+                // Show results
+                // Assuming backend returns JSON like: {"prediction": "Result text"}
+                // Or if it's just a string directly from an older setup: data itself might be the string.
+                // For index.html compatibility, it expects the result to be placed in #result span
+                let resultText = '';
+                if (data && typeof data === 'object' && data.prediction) { // Check if data is an object and has prediction
+                    resultText = data.prediction;
+                } else if (typeof data === 'string') { // This will now handle the plain text response
+                    resultText = data;
+                } else {
+                    resultText = 'Unexpected result format.';
+                    console.error('Unexpected data format:', data);
+                }
+                document.getElementById('result').querySelector('span').textContent = resultText;
+                
+                const resultsSection = document.querySelector('.results-section');
+                if (resultText === "Warning! Brain Tumor Detected.") {
+                    resultsSection.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)'; // Reddish gradient
+                    resultsSection.style.borderColor = '#fca5a5'; // Reddish border
+                    // Optional: Change icon color or text color if needed
+                    const resultIcon = resultsSection.querySelector('.result-icon');
+                    if (resultIcon) {
+                        resultIcon.style.background = '#ef4444'; // Red icon background
+                    }
+                    const resultsTitle = resultsSection.querySelector('.results-title');
+                    if (resultsTitle) {
+                        // resultsTitle.style.color = '#b91c1c'; // Darker red for title
+                    }
+                    const diagnosisCompleteText = resultsSection.querySelector('.result-content h4');
+                    if(diagnosisCompleteText) {
+                        // diagnosisCompleteText.style.color = '#b91c1c';
+                    }
+                    const resultValueText = resultsSection.querySelector('#result');
+                    if(resultValueText) {
+                        // resultValueText.style.color = '#b91c1c'; // Darker red for result text
+                    }
+
+                } else {
+                    resultsSection.style.background = 'linear-gradient(135deg, #ecfdf5, #d1fae5)'; // Original green gradient
+                    resultsSection.style.borderColor = '#bbf7d0'; // Original green border
+                    const resultIcon = resultsSection.querySelector('.result-icon');
+                     if (resultIcon) {
+                        resultIcon.style.background = '#10b981'; // Original green icon background
+                    }
+                }
+                resultsSection.style.display = 'block';
+            })
+            .catch(error => {
+                // Hide loader
+                document.querySelector('.loader').style.display = 'none';
+                
+                // Show error message (you can enhance this)
+                document.getElementById('result').querySelector('span').textContent = 'Error: Could not get prediction. ' + error.message;
+                document.querySelector('.results-section').style.display = 'block';
+                console.error('Error during prediction:', error);
+            })
+            .finally(() => {
+                // Reset button
+                predictButton.disabled = false;
+                predictButton.innerHTML = `
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Start AI Analysis
+                `;
+                // Optionally, reshow image section if it was hidden
+                // document.querySelector('.image-section').style.display = 'block'; 
+            });
+        });
+
+        // Reset form function
+        function resetForm() {
+            document.getElementById('upload-file').reset();
+            document.getElementById('imagePreview').src = '#'; // Clear image preview
+            document.querySelector('.image-section').style.display = 'none';
+            const resultsSection = document.querySelector('.results-section');
+            resultsSection.style.display = 'none';
+            // Reset background to default when form is reset
+            resultsSection.style.background = 'linear-gradient(135deg, #ecfdf5, #d1fae5)';
+            resultsSection.style.borderColor = '#bbf7d0';
+            const resultIcon = resultsSection.querySelector('.result-icon');
+            if (resultIcon) {
+                resultIcon.style.background = '#10b981'; // Original green icon background
+            }
+
+            document.querySelector('.loader').style.display = 'none';
+            // Ensure predict button is enabled
+            const predictButton = document.getElementById('btn-predict');
+            predictButton.disabled = false;
+            predictButton.innerHTML = `
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Start AI Analysis
+            `;
+        }
+
+        // Drag and drop functionality
+        const uploadWrapper = document.querySelector('.file-upload-wrapper');
+        
+        uploadWrapper.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#60a5fa';
+            this.style.background = 'linear-gradient(135deg, #dbeafe, #bfdbfe)';
+        });
+
+        uploadWrapper.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#93c5fd';
+            this.style.background = 'linear-gradient(135deg, #eff6ff, #e0f2fe)';
+        });
+
+        uploadWrapper.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#93c5fd';
+            this.style.background = 'linear-gradient(135deg, #eff6ff, #e0f2fe)';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                document.getElementById('imageUpload').files = files; // Assign dropped files to input
+                
+                // Trigger change event to update preview
+                const event = new Event('change');
+                document.getElementById('imageUpload').dispatchEvent(event);
+            }
+        });
+    </script>
+</body>
+</html>
